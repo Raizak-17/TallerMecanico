@@ -1,0 +1,202 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingresar Trabajo</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* Fondo y fuentes */
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Navbar */
+        .navbar-top {
+            background-color: #161b22;
+            padding: 10px 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+        }
+
+        .navbar-top a {
+            color: #c9d1d9;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .navbar-top a:hover {
+            color: #58a6ff;
+        }
+
+        /* Formulario principal */
+        .form-container {
+            background-color: #161b22;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+            max-width: 600px;
+            margin: 60px auto 0;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .form-container h2 {
+            text-align: center;
+            color: #58a6ff;
+            margin-bottom: 20px;
+            font-size: 1.75rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #9da5b4;
+        }
+
+        .form-control, .form-select {
+            background-color: #21262d;
+            color: #c9d1d9;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 0.9rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #58a6ff;
+            outline: none;
+            box-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
+        }
+
+        /* Botones */
+        .btn-primary {
+            background-color: #238636;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #2ea043;
+        }
+
+        .btn-secondary {
+            background-color: #30363d;
+            color: #c9d1d9;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #484f58;
+            color: #ffffff;
+        }
+
+        /* Mensaje de error */
+        .text-danger {
+            font-size: 0.875rem;
+            margin-top: 5px;
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #6e7681;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: #58a6ff;
+            text-decoration: none;
+        }
+        footer a:hover {
+            color: #1f6feb;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar-top d-flex justify-content-between align-items-center">
+        <a href="javascript:history.back()" class="btn btn-sm btn-secondary">
+            <i class="fa fa-arrow-left"></i> Atrás
+        </a>
+        <span class="navbar-brand">Ingresar Trabajo</span>
+        <a href="{% url 'logout' %}">
+            <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+        </a>
+    </nav>
+
+    <!-- Formulario -->
+    <div class="form-container">
+        <h2><i class="fa fa-tools me-2"></i>Detalles del Trabajo</h2>
+        <form method="POST" id="trabajo-form">
+            {% csrf_token %}
+            
+            <!-- Vehículo -->
+            <div class="mb-3">
+                <label for="vehiculo" class="form-label">{{ form.vehiculo.label }}</label>
+                {{ form.vehiculo }}
+                {% if form.vehiculo.errors %}
+                    <div class="text-danger">{{ form.vehiculo.errors }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Estado -->
+            <div class="mb-3">
+                <label for="estado" class="form-label">{{ form.estado.label }}</label>
+                {{ form.estado }}
+                {% if form.estado.errors %}
+                    <div class="text-danger">{{ form.estado.errors }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Costo Total Reparaciones -->
+            <div class="mb-3">
+                <label for="costo_total_reparaciones" class="form-label">{{ form.costo_total_reparaciones.label }}</label>
+                {{ form.costo_total_reparaciones }}
+            </div>
+
+            <!-- Fecha de Ingreso -->
+            <div class="mb-3">
+                <label for="fecha_ingreso" class="form-label">{{ form.fecha_ingreso.label }}</label>
+                {{ form.fecha_ingreso }}
+            </div>
+
+            <!-- Botones -->
+            <div class="d-flex justify-content-between mt-4">
+                <button type="submit" class="btn btn-primary w-45">
+                    <i class="fa fa-save"></i> Guardar
+                </button>
+                <a href="javascript:history.back()" class="btn btn-secondary w-45">
+                    <i class="fa fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        © 2024 Taller Mecánico | <a href="#">Política de Privacidad</a>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

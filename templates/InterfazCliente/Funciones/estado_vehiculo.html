@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Font Awesome para los iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Estado de Reparación del Vehículo</title>
+    <style>
+        /* Estilo general */
+        body {
+            background-color: #0d1117;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #2563eb;
+            padding: 15px 20px;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #93c5fd;
+        }
+
+        .navbar .ms-auto {
+            margin-left: auto; /* Alineación de los elementos a la derecha */
+        }
+
+        /* Contenedor del formulario */
+        .form-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.1);
+            max-width: 650px;
+            margin: 80px auto;
+            color: #111827;
+        }
+
+        .form-container h2 {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 25px;
+        }
+
+        .form-container select,
+        .form-container button {
+            font-size: 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 12px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .form-container button {
+            background-color: #2563eb;
+            color: white;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .form-container button:hover {
+            background-color: #1d4ed8;
+            transform: scale(1.02);
+        }
+
+        .info-banner {
+            background-color: #eff6ff;
+            padding: 15px;
+            border-left: 6px solid #2563eb;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: #1e3a8a;
+            margin-bottom: 25px;
+        }
+
+        .info-banner i {
+            margin-right: 8px;
+        }
+
+        /* Ajustes de responsividad */
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 20px;
+                margin: 20px;
+            }
+
+            .navbar {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Taller Mecánico</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto"> <!-- Alineación a la derecha -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript:history.back()">
+                            <i class="fas fa-arrow-left"></i> Atrás
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <div class="form-container">
+        <h2>Estado de Reparación del Vehículo</h2>
+        <p>Seleccionar vehículo por patente:</p>
+        <select id="selectPatente" class="form-control">
+            <option value="" disabled selected>Seleccione una patente</option>
+            <option value="ABC123">ABC123</option>
+            <option value="XYZ789">XYZ789</option>
+            <option value="LMN456">LMN456</option>
+        </select>
+        <button onclick="listarEstado()">Listar Estado</button>
+
+        <div class="info-banner mt-4">
+            <p><strong>Notificación:</strong> Estado actualizado exitosamente.</p>
+        </div>
+
+        <div>
+            <h3>Estado Actual:</h3>
+            <p>Inicio de Reparación, En Progreso, o Finalizado (mostrar dinámicamente).</p>
+        </div>
+    </div>
+
+    <script>
+        function listarEstado() {
+            const patenteSeleccionada = document.getElementById('selectPatente').value;
+            console.log("Patente seleccionada:", patenteSeleccionada);
+            // Aquí puedes agregar la lógica para listar el estado basado en la patente seleccionada
+        }
+    </script>
+</body>
+</html>
+s

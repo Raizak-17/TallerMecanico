@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Citas - Mecánico</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-b from-gray-900 to-gray-800 text-gray-200 font-sans">
+
+    <!-- Barra Superior -->
+    <nav class="bg-gray-800 fixed top-0 left-0 w-full shadow-md z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+            <div class="text-lg font-semibold text-white">
+                <i class="fas fa-calendar-check mr-2"></i> Mis Citas - Taller Mecánico
+            </div>
+            <div class="flex space-x-4">
+                <a href="javascript:history.back()" class="text-gray-300 hover:text-white transition duration-300 text-sm">
+                    <i class="fas fa-arrow-left mr-1"></i> Atrás
+                </a>
+                <a href="{% url 'logout' %}" class="text-gray-300 hover:text-white transition duration-300 text-sm">
+                    <i class="fas fa-sign-out-alt mr-1"></i> Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <div class="container mx-auto px-4 py-20 mt-12">
+        <!-- Encabezado -->
+        <div class="text-center mb-8">
+            <i class="fas fa-calendar-check text-blue-400 fa-3x mb-3"></i>
+            <h1 class="text-3xl sm:text-4xl font-bold text-blue-400 uppercase tracking-widest">Mis Citas</h1>
+            <p class="text-gray-400 mt-2 text-sm">Aquí puedes gestionar las citas asignadas y pendientes.</p>
+        </div>
+
+        <!-- Tabla Responsive -->
+        <div class="bg-gray-800 rounded-lg shadow-md overflow-x-auto">
+            <table class="min-w-full text-sm sm:text-base divide-y divide-gray-700">
+                <thead class="bg-gray-700">
+                    <tr class="text-gray-200">
+                        <th class="px-4 py-3 text-center uppercase tracking-wider">Cliente</th>
+                        <th class="px-4 py-3 text-center uppercase tracking-wider">Servicio</th>
+                        <th class="px-4 py-3 text-center uppercase tracking-wider">Fecha</th>
+                        <th class="px-4 py-3 text-center uppercase tracking-wider">Hora</th>
+                        <th class="px-4 py-3 text-center uppercase tracking-wider">Patente</th>
+                        <th class="px-4 py-3 text-center uppercase tracking-wider">Modelo</th>
+                        <th class="px-4 py-3 text-center uppercase tracking-wider">Marca</th>
+                        <th class="px-4 py-3 text-center uppercase tracking-wider">Año</th>
+                        <th class="px-4 py-3 text-center uppercase tracking-wider">Estado</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-700">
+                    {% for cita in citas %}
+                    <tr class="hover:bg-gray-700 transition duration-300">
+                        <td class="px-4 py-3 text-center">
+                            <i class="fas fa-user-circle text-blue-400 mr-1"></i>
+                            {% if cita.cliente %}
+                                {{ cita.cliente.registro.username }}
+                            {% else %}
+                                <span class="text-gray-400">Sin cliente</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <i class="fas fa-tools text-green-400 mr-1"></i> {{ cita.get_servicio_display }}
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <i class="fas fa-calendar-alt text-yellow-400 mr-1"></i> {{ cita.fecha|date:"d/m/Y" }}
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <i class="fas fa-clock text-purple-400 mr-1"></i> {{ cita.hora|time:"H:i" }}
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            {{ cita.patente }}
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            {{ cita.modelo }}
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            {{ cita.marca }}
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            {{ cita.anio }}
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            {% if not cita.mecanico %}
+                            <form action="{% url 'asignar_cita' cita.id %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg shadow-md text-xs sm:text-sm transition duration-300">
+                                    <i class="fas fa-plus"></i> Asignar
+                                </button>
+                            </form>
+                            {% else %}
+                            <span class="bg-green-500 text-white px-2 py-1 rounded-full shadow text-xs sm:text-sm">
+                                <i class="fas fa-user-check mr-1"></i> {{ cita.mecanico.registro.username }}
+                            </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="text-center py-6 text-gray-400 italic">
+                            <i class="fas fa-info-circle text-yellow-400 mr-1"></i> No tienes citas asignadas actualmente.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center mt-8 text-gray-400 text-xs">
+            © 2024 Taller Mecánico - <a href="#" class="text-blue-400 hover:underline">Política de privacidad</a>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

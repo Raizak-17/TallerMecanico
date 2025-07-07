@@ -1,0 +1,199 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listar Vehículos</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to bottom, #0d1117, #161b22);
+            color: #c9d1d9;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Navbar */
+        .navbar-top {
+            background-color: #161b22;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .navbar-brand {
+            color: #58a6ff;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .navbar-links a {
+            color: #c9d1d9;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+        .navbar-links a:hover {
+            color: #58a6ff;
+            transform: scale(1.05);
+        }
+
+        /* Tabla */
+        .table-container {
+            margin-top: 100px;
+            background-color: #161b22;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+        }
+
+        table thead {
+            background-color: #21262d;
+            color: #58a6ff;
+            text-transform: uppercase;
+        }
+
+        table tbody tr:hover {
+            background-color: #30363d;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-icon {
+            padding: 6px 10px;
+            font-size: 0.85rem;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-icon:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 4px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Modal */
+        .modal-content {
+            background-color: #21262d;
+            color: #c9d1d9;
+        }
+
+        .pagination .page-link {
+            background-color: #21262d;
+            color: #c9d1d9;
+            border: none;
+            margin: 0 5px;
+        }
+
+        .pagination .page-link:hover, .pagination .active .page-link {
+            background-color: #58a6ff;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra Superior -->
+    <nav class="navbar-top d-flex justify-content-between align-items-center">
+        <a href="javascript:history.back()" class="btn btn-sm btn-outline-light">
+            <i class="fas fa-arrow-left"></i> Atrás
+        </a>
+        <div class="navbar-brand text-center flex-grow-1">Vehículos Asignados</div>
+        <div class="navbar-links">
+            <a href="{% url 'logout' %}">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </a>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <div class="container table-container">
+        <h3 class="text-center mb-4 text-uppercase fw-bold">Lista de Vehículos</h3>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Patente</th>
+                        <th>Marca</th>
+                        <th>Modelo</th>
+                        <th>Año</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if vehiculos %}
+                        {% for vehiculo in vehiculos %}
+                        <tr>
+                            <td>{{ vehiculo.cliente.nombre }} {{ vehiculo.cliente.apellido }}</td>
+                            <td>{{ vehiculo.patente }}</td>
+                            <td>{{ vehiculo.marca }}</td>
+                            <td>{{ vehiculo.modelo }}</td>
+                            <td>{{ vehiculo.ano }}</td>
+                            <td>
+                                <a href="{% url 'modificar_vehiculo' vehiculo.patente %}" class="btn btn-primary btn-sm btn-icon">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                                <button class="btn btn-danger btn-sm btn-icon" data-bs-toggle="modal" data-bs-target="#deleteModal{{ vehiculo.patente }}">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </button>
+
+                                <!-- Modal Confirmación -->
+                                <div class="modal fade" id="deleteModal{{ vehiculo.patente }}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel">Eliminar Vehículo</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                ¿Está seguro de eliminar el vehículo con patente <strong>{{ vehiculo.patente }}</strong>?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <form method="post" action="{% url 'eliminar_vehiculo' vehiculo.patente %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="no-data">No hay vehículos registrados.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paginación -->
+        {% if page_obj.has_other_pages %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                </li>
+                {% endif %}
+                <li class="page-item active">
+                    <a class="page-link">{{ page_obj.number }}</a>
+                </li>
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

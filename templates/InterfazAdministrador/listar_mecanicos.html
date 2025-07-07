@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Mecánicos</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <!-- Bootstrap JS para modales y toasts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <style>
+        /* Animaciones personalizadas */
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .animate-slide-down { animation: slideDown 0.3s ease-out; }
+        .animate-fade-in-up { animation: fadeInUp 0.5s ease-out; }
+        
+        /* Efectos de hover más suaves */
+        .btn-action {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Gradientes personalizados */
+        .bg-gradient-dark {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+        }
+        
+        .bg-gradient-blue {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        }
+        
+        /* Efectos de tabla */
+        .table-row {
+            transition: all 0.2s ease;
+        }
+        
+        .table-row:hover {
+            background-color: rgba(59, 130, 246, 0.1) !important;
+            transform: scale(1.01);
+        }
+        
+        /* Toast personalizado */
+        .toast {
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body class="bg-gradient-dark text-gray-100 min-h-screen">
+    <!-- Navbar mejorada -->
+    <nav class="bg-gradient-blue shadow-2xl fixed top-0 w-full z-50 animate-slide-down">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Botón Atrás -->
+                <a href="{% url 'admin_panel' %}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg transition-all duration-200 hover:scale-105">
+                    <i class="bi bi-arrow-left mr-2"></i>
+                    Atrás
+                </a>
+                
+                <!-- Título central -->
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white bg-opacity-20 p-2 rounded-lg">
+                        <i class="bi bi-wrench text-xl"></i>
+                    </div>
+                    <h1 class="text-xl font-bold tracking-tight">Lista de Mecánicos</h1>
+                </div>
+                
+                <!-- Botón Cerrar Sesión -->
+                <a href="{% url 'logout' %}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all duration-200 hover:scale-105">
+                    <i class="bi bi-box-arrow-right mr-2"></i>
+                    Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="pt-24 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Header de la sección -->
+            <div class="text-center mb-8 animate-fade-in-up">
+                <h2 class="text-3xl font-bold text-white mb-2">Gestión de Mecánicos</h2>
+                <p class="text-gray-400">Administra y controla el personal técnico</p>
+            </div>
+
+            <!-- Tarjeta de la tabla -->
+            <div class="bg-gray-900 bg-opacity-80 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-700 animate-fade-in-up">
+                <!-- Header de la tabla -->
+                <div class="px-6 py-4 border-b border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-blue-600 p-2 rounded-lg">
+                                <i class="bi bi-people-fill text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-white">Personal Registrado</h3>
+                                <p class="text-sm text-gray-400">Listado completo de mecánicos</p>
+                            </div>
+                        </div>
+                        <div class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                            {% with mecanicos|length as total %}{{ total }} mecánico{{ total|pluralize }}{% endwith %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla responsive -->
+                <div>
+                    <table class="w-full">
+                        <thead class="bg-gray-800">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="bi bi-card-text text-blue-400"></i>
+                                        <span>RUT</span>
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="bi bi-person text-green-400"></i>
+                                        <span>Nombre</span>
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="bi bi-person text-green-400"></i>
+                                        <span>Apellido</span>
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="bi bi-envelope text-purple-400"></i>
+                                        <span>Email</span>
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="bi bi-shield-lock text-yellow-400"></i>
+                                        <span>PIN</span>
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4 text-center text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                                    <div class="flex items-center justify-center space-x-2">
+                                        <i class="bi bi-gear text-gray-400"></i>
+                                        <span>Acciones</span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-700">
+                            {% for mecanico in mecanicos %}
+                            <tr class="table-row hover:bg-gray-800">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-white">{{ mecanico.rut }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm mr-3">
+                                            {{ mecanico.nombre|first|upper }}
+                                        </div>
+                                        <div class="text-sm font-medium text-white">{{ mecanico.nombre }}</div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-300">{{ mecanico.apellido }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <i class="bi bi-envelope-fill text-purple-400 mr-2"></i>
+                                        <div class="text-sm text-gray-300">{{ mecanico.email }}</div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-900 text-yellow-200 border border-yellow-700">
+                                        <i class="bi bi-key-fill mr-1"></i>
+                                        {{ mecanico.pin }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <div class="flex justify-center space-x-2">
+                                        <!-- Botón Modificar -->
+                                        <a href="{% url 'modificar_mecanico' mecanico.rut %}" 
+                                           class="btn-action inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-lg">
+                                            <i class="bi bi-pencil-fill mr-2"></i>
+                                            Modificar
+                                        </a>
+                                        
+                                        <!-- Botón Eliminar -->
+                                        <button type="button" 
+                                                class="btn-action inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg shadow-lg"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#confirmDeleteModal" 
+                                                data-url="{% url 'eliminar_mecanico' mecanico.rut %}" 
+                                                data-rut="{{ mecanico.rut }}">
+                                            <i class="bi bi-trash-fill mr-2"></i>
+                                            Eliminar
+                                        </button>
+                                        
+                                        <!-- Botón Restablecer -->
+                                        <button type="button" 
+                                                class="btn-action inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg shadow-lg"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#resetPasswordModal" 
+                                                data-rut="{{ mecanico.rut }}">
+                                            <i class="bi bi-key-fill mr-2"></i>
+                                            Restablecer
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Sin resultados -->
+                {% if not mecanicos %}
+                <div class="text-center py-12">
+                    <div class="mx-auto w-24 h-24 bg-gray-800 rounded-full flex items-center justify-center mb-4">
+                        <i class="bi bi-people text-3xl text-gray-500"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-300 mb-2">No hay mecánicos registrados</h3>
+                    <p class="text-gray-500">Comienza agregando tu primer mecánico al sistema.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        // Mejorar la experiencia de interacción
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animación suave para las filas de la tabla
+            const rows = document.querySelectorAll('.table-row');
+            rows.forEach((row, index) => {
+                row.style.animationDelay = `${index * 0.05}s`;
+                row.classList.add('animate-fade-in-up');
+            });
+            
+            // Efecto de ripple en botones
+            const buttons = document.querySelectorAll('.btn-action');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.classList.add('absolute', 'bg-white', 'bg-opacity-30', 'rounded-full', 'animate-ping');
+                    
+                    this.style.position = 'relative';
+                    this.style.overflow = 'hidden';
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

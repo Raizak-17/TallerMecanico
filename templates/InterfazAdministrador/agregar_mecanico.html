@@ -1,0 +1,364 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Mecánico - Administrador</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    
+    <style>
+        /* Animaciones personalizadas */
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes fadeInLeft {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .animate-slide-down { animation: slideDown 0.3s ease-out; }
+        .animate-fade-in-up { animation: fadeInUp 0.5s ease-out; }
+        .animate-fade-in-left { animation: fadeInLeft 0.5s ease-out; }
+        
+        /* Gradientes personalizados */
+        .bg-gradient-dark {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+        }
+        
+        .bg-gradient-blue {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        }
+        
+        .bg-gradient-card {
+            background: linear-gradient(135deg, #21262d 0%, #161b22 100%);
+        }
+        
+        /* Efectos de focus mejorados */
+        .input-focus:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        /* Efectos hover en botones */
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+        
+        /* Efectos de las secciones */
+        .form-section {
+            transition: all 0.3s ease;
+        }
+        
+        .form-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-gradient-dark text-gray-100 min-h-screen">
+    <!-- Navbar mejorada -->
+    <nav class="bg-gradient-blue shadow-2xl fixed top-0 w-full z-50 animate-slide-down">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Marca/Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white bg-opacity-20 p-2 rounded-lg">
+                        <i class="bi bi-wrench text-xl text-white"></i>
+                    </div>
+                    <h1 class="text-xl font-bold tracking-tight text-white">Taller Mecánico</h1>
+                </div>
+                
+                <!-- Acciones de navegación -->
+                <div class="flex items-center space-x-4">
+                    <a href="javascript:history.back()" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg transition-all duration-200 hover:scale-105">
+                        <i class="bi bi-arrow-left mr-2"></i>
+                        Ir Atrás
+                    </a>
+                    <a href="{% url 'logout' %}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all duration-200 hover:scale-105">
+                        <i class="bi bi-box-arrow-right mr-2"></i>
+                        Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="pt-24 pb-12">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Header de la página -->
+            <div class="text-center mb-8 animate-fade-in-up">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
+                    <i class="bi bi-person-plus text-2xl text-white"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-white mb-2">Agregar Mecánico</h2>
+                <p class="text-gray-400">Completa los datos para registrar un nuevo mecánico</p>
+            </div>
+
+            <!-- Formulario -->
+            <div class="bg-gradient-card backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-700 p-8 animate-fade-in-up">
+                <form method="POST" action="{% url 'agregar_mecanico' %}" class="space-y-8">
+                    {% csrf_token %}
+                    
+                    <!-- Sección: Credenciales -->
+                    <div class="form-section bg-gray-800 bg-opacity-50 rounded-xl p-6 border border-gray-600 animate-fade-in-left">
+                        <div class="flex items-center space-x-3 mb-6">
+                            <div class="bg-purple-600 p-2 rounded-lg">
+                                <i class="bi bi-shield-lock text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-white">Credenciales de la Cuenta</h3>
+                                <p class="text-sm text-gray-400">Configuración de acceso al sistema</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Nombre de Usuario -->
+                            <div class="md:col-span-2">
+                                <label for="username" class="block text-sm font-medium text-gray-300 mb-2">
+                                    <i class="bi bi-person mr-2 text-purple-400"></i>
+                                    Nombre de Usuario
+                                </label>
+                                <input type="text" 
+                                       id="username" 
+                                       name="username" 
+                                       class="input-focus w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                                       placeholder="Ingrese el nombre de usuario" 
+                                       required>
+                            </div>
+                            
+                            <!-- Contraseña -->
+                            <div>
+                                <label for="password" class="block text-sm font-medium text-gray-300 mb-2">
+                                    <i class="bi bi-lock mr-2 text-purple-400"></i>
+                                    Contraseña
+                                </label>
+                                <input type="password" 
+                                       id="password" 
+                                       name="password" 
+                                       class="input-focus w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                                       placeholder="Ingrese una contraseña" 
+                                       required>
+                            </div>
+                            
+                            <!-- Confirmar Contraseña -->
+                            <div>
+                                <label for="confirm_password" class="block text-sm font-medium text-gray-300 mb-2">
+                                    <i class="bi bi-lock-fill mr-2 text-purple-400"></i>
+                                    Confirmar Contraseña
+                                </label>
+                                <input type="password" 
+                                       id="confirm_password" 
+                                       name="confirm_password" 
+                                       class="input-focus w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                                       placeholder="Confirme su contraseña" 
+                                       required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección: Datos Personales -->
+                    <div class="form-section bg-gray-800 bg-opacity-50 rounded-xl p-6 border border-gray-600 animate-fade-in-left" style="animation-delay: 0.2s;">
+                        <div class="flex items-center space-x-3 mb-6">
+                            <div class="bg-emerald-600 p-2 rounded-lg">
+                                <i class="bi bi-person-vcard text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-white">Datos del Mecánico</h3>
+                                <p class="text-sm text-gray-400">Información personal del empleado</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- RUT -->
+                            <div>
+                                <label for="rut" class="block text-sm font-medium text-gray-300 mb-2">
+                                    <i class="bi bi-card-text mr-2 text-emerald-400"></i>
+                                    RUT
+                                </label>
+                                <input type="text" 
+                                       id="rut" 
+                                       name="rut" 
+                                       class="input-focus w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                                       placeholder="12.345.678-9" 
+                                       required>
+                            </div>
+                            
+                            <!-- PIN -->
+                            <div>
+                                <label for="pin" class="block text-sm font-medium text-gray-300 mb-2">
+                                    <i class="bi bi-shield-fill-check mr-2 text-emerald-400"></i>
+                                    PIN (4 dígitos)
+                                </label>
+                                <input type="text" 
+                                       id="pin" 
+                                       name="pin" 
+                                       maxlength="4" 
+                                       class="input-focus w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                                       placeholder="1234" 
+                                       required>
+                            </div>
+                            
+                            <!-- Nombre -->
+                            <div>
+                                <label for="nombre" class="block text-sm font-medium text-gray-300 mb-2">
+                                    <i class="bi bi-person mr-2 text-emerald-400"></i>
+                                    Nombre
+                                </label>
+                                <input type="text" 
+                                       id="nombre" 
+                                       name="nombre" 
+                                       class="input-focus w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                                       placeholder="Ingrese el nombre" 
+                                       required>
+                            </div>
+                            
+                            <!-- Apellido -->
+                            <div>
+                                <label for="apellido" class="block text-sm font-medium text-gray-300 mb-2">
+                                    <i class="bi bi-person mr-2 text-emerald-400"></i>
+                                    Apellido
+                                </label>
+                                <input type="text" 
+                                       id="apellido" 
+                                       name="apellido" 
+                                       class="input-focus w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                                       placeholder="Ingrese el apellido" 
+                                       required>
+                            </div>
+                            
+                            <!-- Fecha de Nacimiento -->
+                            <div>
+                                <label for="fecha_nacimiento" class="block text-sm font-medium text-gray-300 mb-2">
+                                    <i class="bi bi-calendar mr-2 text-emerald-400"></i>
+                                    Fecha de Nacimiento
+                                </label>
+                                <input type="date" 
+                                       id="fecha_nacimiento" 
+                                       name="fecha_nacimiento" 
+                                       class="input-focus w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                                       required>
+                            </div>
+                            
+                            <!-- Género -->
+                            <div>
+                                <label for="genero" class="block text-sm font-medium text-gray-300 mb-2">
+                                    <i class="bi bi-gender-ambiguous mr-2 text-emerald-400"></i>
+                                    Género
+                                </label>
+                                <select id="genero" 
+                                        name="genero" 
+                                        class="input-focus w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                                        required>
+                                    <option value="" class="bg-gray-700">Seleccione una opción</option>
+                                    <option value="M" class="bg-gray-700">Masculino</option>
+                                    <option value="F" class="bg-gray-700">Femenino</option>
+                                    <option value="O" class="bg-gray-700">Otro</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Email -->
+                            <div class="md:col-span-2">
+                                <label for="email" class="block text-sm font-medium text-gray-300 mb-2">
+                                    <i class="bi bi-envelope mr-2 text-emerald-400"></i>
+                                    Correo Electrónico
+                                </label>
+                                <input type="email" 
+                                       id="email" 
+                                       name="email" 
+                                       class="input-focus w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                                       placeholder="ejemplo@correo.com" 
+                                       required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Botón de envío -->
+                    <div class="flex justify-center animate-fade-in-up" style="animation-delay: 0.4s;">
+                        <button type="submit" 
+                                class="btn-hover inline-flex items-center px-8 py-4 text-lg font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-xl shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900">
+                            <i class="bi bi-person-plus mr-3 text-xl"></i>
+                            Agregar Mecánico
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-gray-500 py-8 border-t border-gray-800">
+        <div class="flex items-center justify-center space-x-2">
+            <i class="bi bi-gear text-gray-600"></i>
+            <p>© 2024 Taller Mecánico. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mejorar la experiencia de usuario
+        document.addEventListener('DOMContentLoaded', function() {
+            // Validación de contraseñas en tiempo real
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirm_password');
+            
+            function validatePasswords() {
+                if (password.value !== confirmPassword.value) {
+                    confirmPassword.setCustomValidity('Las contraseñas no coinciden');
+                    confirmPassword.classList.add('border-red-500');
+                    confirmPassword.classList.remove('border-gray-600');
+                } else {
+                    confirmPassword.setCustomValidity('');
+                    confirmPassword.classList.remove('border-red-500');
+                    confirmPassword.classList.add('border-gray-600');
+                }
+            }
+            
+            password.addEventListener('input', validatePasswords);
+            confirmPassword.addEventListener('input', validatePasswords);
+            
+            // Formatear RUT automáticamente
+            const rutInput = document.getElementById('rut');
+            rutInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/[^0-9kK]/g, '');
+                if (value.length > 1) {
+                    value = value.slice(0, -1).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + '-' + value.slice(-1);
+                }
+                e.target.value = value;
+            });
+            
+            // Validar PIN solo números
+            const pinInput = document.getElementById('pin');
+            pinInput.addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+            });
+            
+            // Efectos de animación al hacer scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.form-section').forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>

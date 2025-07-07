@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Comprobantes Electrónicos</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome para los iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117;
+            color: #e5e7eb;
+        }
+
+        .custom-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .custom-button:hover {
+            background-color: #1d4ed8;
+            transform: scale(1.05);
+        }
+
+        .custom-button i {
+            margin-right: 8px;
+        }
+
+        .section-heading {
+            color: #93c5fd;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .form-container {
+            background-color: #1e293b;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.5);
+            max-width: 650px;
+            margin: 80px auto;
+        }
+
+        .form-container input,
+        .form-container select {
+            background-color: #111827;
+            color: #e5e7eb;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 12px;
+            width: 100%;
+            transition: border 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-container input:focus,
+        .form-container select:focus {
+            border-color: #2563eb;
+            outline: none;
+            box-shadow: 0px 0px 8px rgba(37, 99, 235, 0.5);
+        }
+
+        .form-container label {
+            color: #9ca3af;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .bg-dark {
+            background-color: #0d1117;
+        }
+    </style>
+</head>
+<body class="bg-dark text-gray-300">
+    <!-- Navbar -->
+    <nav class="bg-blue-600 shadow-md p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="#" class="text-white text-lg font-bold">Taller Mecánico</a>
+            <div class="flex space-x-4">
+                <a href="javascript:history.back()" class="text-white flex items-center hover:text-blue-300">
+                    <i class="fas fa-arrow-left mr-2"></i>Atrás
+                </a>
+                <a href="{% url 'logout' %}" class="text-white flex items-center hover:text-blue-300">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Formulario -->
+    <div class="form-container">
+        <h2 class="text-2xl font-bold text-gray-100 text-center mb-6">Seleccionar Método de Pago</h2>
+        <form id="paymentForm" class="space-y-4">
+            <div>
+                <label for="paymentType" class="block text-sm font-medium">Método de Pago:</label>
+                <select id="paymentType" name="paymentType" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+                    <option value="Tarjeta de Débito">Tarjeta de Débito</option>
+                    <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="PayPal">PayPal</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="amount" class="block text-sm font-medium">Monto:</label>
+                <input type="number" id="amount" name="amount" placeholder="Ingrese el monto" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
+            </div>
+
+            <button type="submit" class="w-full custom-button">
+                <i class="fas fa-file-alt"></i> Generar Comprobante
+            </button>
+        </form>
+
+        <!-- Comprobante Electrónico -->
+        <div id="invoice" class="mt-8 hidden bg-gray-900 p-4 rounded-lg shadow-inner">
+            <h3 class="section-heading">Comprobante Electrónico</h3>
+            <div id="invoiceDetails" class="text-gray-400 space-y-2">
+                <!-- Los detalles se generarán dinámicamente -->
+            </div>
+            <button id="downloadInvoice" class="mt-4 custom-button bg-green-600 hover:bg-green-700">
+                <i class="fas fa-download"></i> Descargar Comprobante
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script>
+        let pdf; // Declarar el objeto PDF globalmente
+        const logoURL = 'logo.png';
+
+        document.getElementById('paymentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const { jsPDF } = window.jspdf;
+            pdf = new jsPDF();
+
+            const paymentType = document.getElementById('paymentType').value;
+            const amount = document.getElementById('amount').value;
+            const date = new Date().toLocaleDateString();
+
+            // Generar PDF con imagen si está disponible
+            const img = new Image();
+            img.src = logoURL;
+            img.onload = function() {
+                pdf.addImage(img, 'PNG', 10, 10, 30, 30);
+                renderPDFContent(pdf, paymentType, amount, date);
+            };
+            img.onerror = function() {
+                renderPDFContent(pdf, paymentType, amount, date);
+            };
+        });
+
+        function renderPDFContent(pdf, paymentType, amount, date) {
+            pdf.setFontSize(20);
+            pdf.setTextColor(0, 0, 255);
+            pdf.text("Comprobante Electrónico", 50, 20);
+            pdf.setFontSize(12);
+            pdf.setTextColor(100);
+            pdf.text("Auto Mechanics - Taller de Confianza", 50, 28);
+
+            pdf.setTextColor(0);
+            pdf.text(`Método de Pago: ${paymentType}`, 10, 50);
+            pdf.text(`Monto: $${parseFloat(amount).toFixed(2)}`, 10, 60);
+            pdf.text(`Fecha: ${date}`, 10, 70);
+
+            pdf.line(10, 80, 200, 80);
+            pdf.setTextColor(100);
+            pdf.text("Gracias por confiar en Auto Mechanics", 10, 90);
+
+            // Mostrar detalles en la interfaz
+            const invoiceSection = document.getElementById('invoice');
+            const invoiceDetails = document.getElementById('invoiceDetails');
+            invoiceDetails.innerHTML = `
+                <p><strong>Método de Pago:</strong> ${paymentType}</p>
+                <p><strong>Monto:</strong> $${parseFloat(amount).toFixed(2)}</p>
+                <p><strong>Fecha:</strong> ${date}</p>
+            `;
+            invoiceSection.classList.remove('hidden');
+        }
+
+        document.getElementById('downloadInvoice').addEventListener('click', function() {
+            pdf.save("comprobante.pdf");
+        });
+    </script>
+</body>
+</html>

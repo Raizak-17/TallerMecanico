@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Taller Mecánico</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.6s ease-out',
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 3s infinite',
+                        'bounce-slow': 'bounce 2s infinite'
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+    <!-- Elementos decorativos de fondo -->
+    <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float"></div>
+        <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" style="animation-delay: 2s;"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse-slow"></div>
+    </div>
+
+    <!-- Patrón de puntos decorativo -->
+    <div class="absolute inset-0 opacity-5">
+        <div style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 50px 50px;"></div>
+    </div>
+
+    <!-- Contenedor principal -->
+    <div class="relative z-10 min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-md">
+            <!-- Tarjeta principal -->
+            <div class="bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-fade-in-up">
+                <!-- Header con gradiente -->
+                <div class="relative bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 p-8 text-center">
+                    <div class="absolute inset-0 bg-black/20"></div>
+                    <div class="relative">
+                        <div class="w-20 h-20 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm animate-bounce-slow">
+                            <i class="fas fa-user-plus text-2xl text-white"></i>
+                        </div>
+                        <h1 class="text-2xl font-bold text-white mb-2">Registro de Cliente</h1>
+                        <p class="text-white/80 text-sm">Únete a nuestro taller mecánico</p>
+                    </div>
+                </div>
+
+                <!-- Formulario -->
+                <div class="p-8">
+                    <form method="post" class="space-y-6" novalidate>
+                        <!-- Django CSRF Token -->
+                        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                        <!-- Campo de usuario -->
+                        <div class="group">
+                            <label class="block text-sm font-medium text-white/90 mb-2 transition-colors">
+                                <i class="fas fa-user mr-2 text-purple-400"></i>
+                                Nombre de Usuario
+                            </label>
+                            <div class="relative">
+                                <input 
+                                    type="text" 
+                                    id="username" 
+                                    name="username" 
+                                    class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent backdrop-blur-sm transition-all duration-300 hover:bg-white/15"
+                                    placeholder="Ingresa tu nombre de usuario"
+                                    required
+                                >
+                                <div class="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-xl opacity-0 transition-opacity duration-300 pointer-events-none group-hover:opacity-100"></div>
+                            </div>
+                        </div>
+
+                        <!-- Campo de contraseña -->
+                        <div class="group">
+                            <label class="block text-sm font-medium text-white/90 mb-2 transition-colors">
+                                <i class="fas fa-lock mr-2 text-blue-400"></i>
+                                Contraseña
+                            </label>
+                            <div class="relative">
+                                <input 
+                                    type="password" 
+                                    id="password" 
+                                    name="password" 
+                                    class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all duration-300 hover:bg-white/15"
+                                    placeholder="Ingresa una contraseña segura"
+                                    required
+                                >
+                                <div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl opacity-0 transition-opacity duration-300 pointer-events-none group-hover:opacity-100"></div>
+                            </div>
+                        </div>
+
+                        <!-- Campo de confirmar contraseña -->
+                        <div class="group">
+                            <label class="block text-sm font-medium text-white/90 mb-2 transition-colors">
+                                <i class="fas fa-lock mr-2 text-cyan-400"></i>
+                                Confirmar Contraseña
+                            </label>
+                            <div class="relative">
+                                <input 
+                                    type="password" 
+                                    id="repassword" 
+                                    name="repassword" 
+                                    class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent backdrop-blur-sm transition-all duration-300 hover:bg-white/15"
+                                    placeholder="Confirma tu contraseña"
+                                    required
+                                >
+                                <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-xl opacity-0 transition-opacity duration-300 pointer-events-none group-hover:opacity-100"></div>
+                            </div>
+                        </div>
+
+                        <!-- Botón de registro -->
+                        <button 
+                            type="submit" 
+                            class="w-full bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group"
+                        >
+                            <div class="absolute inset-0 bg-gradient-to-r from-purple-700 via-blue-700 to-cyan-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <div class="relative flex items-center justify-center">
+                                <i class="fas fa-rocket mr-2 group-hover:animate-bounce"></i>
+                                Registrarse
+                            </div>
+                        </button>
+                    </form>
+
+                    <!-- Enlace de login -->
+                    <div class="mt-8 text-center">
+                        <div class="flex items-center justify-center mb-4">
+                            <div class="flex-grow h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+                            <span class="px-4 text-white/60 text-sm">o</span>
+                            <div class="flex-grow h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+                        </div>
+                        <p class="text-white/70 text-sm">
+                            ¿Ya tienes una cuenta? 
+                            <a href="{% url 'login' %}" class="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors duration-300 hover:underline">
+                                Inicia sesión aquí
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información adicional -->
+            <div class="mt-6 text-center">
+                <div class="flex items-center justify-center space-x-6 text-white/50 text-sm">
+                    <div class="flex items-center">
+                        <i class="fas fa-shield-alt mr-2 text-green-400"></i>
+                        Seguro
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-bolt mr-2 text-yellow-400"></i>
+                        Rápido
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-heart mr-2 text-red-400"></i>
+                        Confiable
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast container para mensajes de Django -->
+    <div id="toast-container" class="fixed bottom-4 right-4 z-50 space-y-2 max-w-sm">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="{% if 'success' in message.tags %}bg-green-500{% else %}bg-red-500{% endif %} text-white px-6 py-4 rounded-xl shadow-lg backdrop-blur-sm border border-white/20 animate-fade-in-up opacity-95">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            {% if 'success' in message.tags %}
+                                <i class="fas fa-check-circle mr-3 text-lg"></i>
+                            {% else %}
+                                <i class="fas fa-exclamation-triangle mr-3 text-lg"></i>
+                            {% endif %}
+                            <span class="font-medium">{{ message }}</span>
+                        </div>
+                        <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white/80 hover:text-white transition-colors">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <script>
+        // Animación de partículas flotantes
+        function createFloatingParticles() {
+            const container = document.body;
+            const colors = ['text-purple-400', 'text-blue-400', 'text-cyan-400', 'text-white'];
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = `absolute w-1 h-1 ${colors[Math.floor(Math.random() * colors.length)]} rounded-full opacity-30`;
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                particle.style.animation = `float ${3 + Math.random() * 4}s ease-in-out infinite`;
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(particle);
+                
+                // Remover partícula después de un tiempo
+                setTimeout(() => {
+                    particle.remove();
+                }, 10000);
+            }
+        }
+
+        // Crear partículas cada cierto tiempo
+        setInterval(createFloatingParticles, 3000);
+        createFloatingParticles();
+
+        // Validación visual del formulario
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('scale-105');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('scale-105');
+            });
+            
+            input.addEventListener('input', function() {
+                if (this.value.length > 0) {
+                    this.classList.add('border-green-400');
+                    this.classList.remove('border-white/20');
+                } else {
+                    this.classList.remove('border-green-400');
+                    this.classList.add('border-white/20');
+                }
+            });
+        });
+
+        // Validación de contraseñas coincidentes
+        const password = document.getElementById('password');
+        const repassword = document.getElementById('repassword');
+        
+        function validatePasswords() {
+            if (password.value && repassword.value) {
+                if (password.value === repassword.value) {
+                    repassword.classList.add('border-green-400');
+                    repassword.classList.remove('border-red-400');
+                } else {
+                    repassword.classList.add('border-red-400');
+                    repassword.classList.remove('border-green-400');
+                }
+            }
+        }
+        
+        // Manejo del formulario
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const repassword = document.getElementById('repassword').value;
+            const username = document.getElementById('username').value;
+            
+            // Validaciones básicas
+            if (!username.trim()) {
+                e.preventDefault();
+                showToast('El nombre de usuario es requerido', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                e.preventDefault();
+                showToast('La contraseña debe tener al menos 6 caracteres', 'error');
+                return;
+            }
+            
+            if (password !== repassword) {
+                e.preventDefault();
+                showToast('Las contraseñas no coinciden', 'error');
+                return;
+            }
+            
+            // Mostrar indicador de carga
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Registrando...';
+            submitBtn.disabled = true;
+            
+            // Si todo está bien, el formulario se enviará normalmente
+        });
+        
+        // Función para mostrar toasts personalizados
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+            const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+            
+            toast.className = `${bgColor} text-white px-6 py-4 rounded-xl shadow-lg backdrop-blur-sm border border-white/20 animate-fade-in-up opacity-95`;
+            toast.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <i class="fas ${icon} mr-3 text-lg"></i>
+                        <span class="font-medium">${message}</span>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white/80 hover:text-white transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Auto-remover después de 5 segundos
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.remove();
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

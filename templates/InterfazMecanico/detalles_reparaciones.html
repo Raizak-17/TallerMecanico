@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Reparaciones</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-900 text-gray-300">
+
+    <!-- Navbar -->
+    <nav class="bg-gray-800 py-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <!-- Título -->
+            <h1 class="text-2xl font-bold text-white">
+                Taller Mecánico - Registrar Reparación
+            </h1>
+            <!-- Botones -->
+            <div class="flex space-x-4">
+                <a href="javascript:history.back()" class="text-gray-300 hover:text-blue-400 flex items-center transition duration-300">
+                    <i class="fas fa-arrow-left mr-2"></i> Ir Atrás
+                </a>
+                <a href="{% url 'logout' %}" class="text-gray-300 hover:text-red-400 flex items-center transition duration-300">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Formulario para agregar reparación -->
+        <section class="mb-8">
+            <h3 class="text-lg font-semibold text-blue-400 mb-4">Agregar Reparación</h3>
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                <form method="POST" class="space-y-6">
+                    {% csrf_token %}
+                    <div>
+                        <label for="trabajo" class="block text-sm font-medium text-gray-400 mb-2">Seleccionar Trabajo</label>
+                        <select id="trabajo" name="trabajo_id" class="form-select bg-gray-700 border-gray-600 text-gray-200 rounded-lg focus:ring-blue-400 focus:border-blue-400" required>
+                            <option value="" disabled selected>-- Selecciona un trabajo --</option>
+                            {% for trabajo_option in trabajos %}
+                                <option value="{{ trabajo_option.id }}">
+                                    {{ trabajo_option.vehiculo.marca }} {{ trabajo_option.vehiculo.modelo }} ({{ trabajo_option.vehiculo.patente }}) - {{ trabajo_option.estado }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="descripcion" class="block text-sm font-medium text-gray-400 mb-2">Descripción de la Reparación</label>
+                        <textarea id="descripcion" name="descripcion" class="form-control bg-gray-700 border-gray-600 text-gray-200 rounded-lg focus:ring-blue-400 focus:border-blue-400" rows="3" required></textarea>
+                    </div>
+                    <div>
+                        <label for="costo" class="block text-sm font-medium text-gray-400 mb-2">Costo</label>
+                        <input type="number" id="costo" name="costo" class="form-control bg-gray-700 border-gray-600 text-gray-200 rounded-lg focus:ring-blue-400 focus:border-blue-400" step="0.01" required>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg shadow-md transition duration-300">
+                        <i class="fas fa-save mr-2"></i> Registrar Reparación
+                    </button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 py-4">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2024 Taller Mecánico. Todos los derechos reservados.</p>
+            <p>📞 Teléfono: 123-456-789 | 🌐 www.tallermecanico.com</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

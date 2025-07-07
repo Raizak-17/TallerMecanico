@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes Asignados - Taller Mecánico</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-b from-gray-900 to-gray-800 text-gray-200 font-sans">
+
+    <!-- Barra Superior -->
+    <nav class="bg-gray-800 fixed top-0 left-0 w-full shadow-md z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+            <div class="text-lg font-semibold text-white flex items-center">
+                <a href="javascript:history.back()" class="text-gray-300 hover:text-blue-400 transition duration-300">
+                    <i class="fas fa-arrow-left mr-2"></i> Atrás
+                </a>
+            </div>
+            <div class="text-lg font-semibold text-blue-400 uppercase">
+                Clientes Asignados
+            </div>
+            <div>
+                <a href="{% url 'logout' %}" class="text-gray-300 hover:text-blue-400 transition duration-300 text-sm">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenedor Principal -->
+    <div class="container mx-auto px-4 py-20 mt-12">
+        <!-- Encabezado -->
+        <div class="text-center mb-8">
+            <i class="fas fa-users text-blue-400 text-4xl mb-3"></i>
+            <h1 class="text-3xl sm:text-4xl font-bold text-blue-400 uppercase tracking-widest">Clientes Asignados</h1>
+            <p class="text-gray-400 mt-2 text-sm">Aquí puedes revisar los clientes asignados a tus citas.</p>
+        </div>
+
+        <!-- Tabla Responsive -->
+        <div class="bg-gray-800 rounded-lg shadow-md overflow-x-auto">
+            {% if page_obj %}
+            <table class="min-w-full text-sm sm:text-base divide-y divide-gray-700">
+                <thead class="bg-gray-700">
+                    <tr class="text-gray-200">
+                        <th class="px-4 py-3 text-center uppercase tracking-wider">#</th>
+                        <th class="px-4 py-3 text-center uppercase tracking-wider">RUT</th>
+                        <th class="px-4 py-3 text-center uppercase tracking-wider">Nombre</th>
+                        <th class="px-4 py-3 text-center uppercase tracking-wider">Apellido</th>
+                        <th class="px-4 py-3 text-center uppercase tracking-wider">Email</th>
+                        <th class="px-4 py-3 text-center uppercase tracking-wider">Teléfono</th>
+                        <th class="px-4 py-3 text-center uppercase tracking-wider">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-700">
+                    {% for cliente in page_obj %}
+                    <tr class="hover:bg-gray-700 transition duration-300">
+                        <td class="px-4 py-3 text-center">{{ forloop.counter }}</td>
+                        <td class="px-4 py-3 text-center">{{ cliente.rut }}</td>
+                        <td class="px-4 py-3 text-center">{{ cliente.nombre }}</td>
+                        <td class="px-4 py-3 text-center">{{ cliente.apellido }}</td>
+                        <td class="px-4 py-3 text-center">{{ cliente.email }}</td>
+                        <td class="px-4 py-3 text-center">{{ cliente.telefono|default:"N/A" }}</td>
+                        <td class="px-4 py-3 text-center whitespace-nowrap">
+                            <a href="{% url 'modificar_cliente' cliente.rut %}" class="inline-block bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg shadow-md text-xs sm:text-sm transition duration-300">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <a href="{% url 'eliminar_cliente' cliente.rut %}" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">Eliminar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="text-center py-6 text-gray-400 italic">
+                <i class="fas fa-info-circle text-yellow-400 mr-1"></i> No hay clientes asignados actualmente.
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center mt-8 text-gray-400 text-xs">
+            © 2024 Taller Mecánico - Desarrollado con <i class="fas fa-heart text-red-500"></i> por [Tu Nombre].
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

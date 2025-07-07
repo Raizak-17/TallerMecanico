@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultar Trabajos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f1f5f9;
+        }
+
+        .navbar {
+            background-color: #1e293b !important;
+        }
+
+        .table thead {
+            background-color: #1e293b;
+            color: #f1f5f9;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #334155;
+            transition: background-color 0.3s;
+        }
+
+        .btn {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        footer {
+            background-color: #1e293b;
+            color: #94a3b8;
+            padding: 1rem 0;
+            text-align: center;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="#">
+            <i class="fa-solid fa-wrench"></i> Taller Mecánico
+        </a>
+        <div class="d-flex ms-auto">
+            <a href="javascript:history.back()" class="btn btn-outline-light btn-sm me-2">
+                <i class="fa-solid fa-arrow-left"></i> Ir Atrás
+            </a>
+            <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">
+                <i class="fa-solid fa-sign-out-alt"></i> Cerrar Sesión
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- Contenido Principal -->
+<div class="container mt-5">
+    <h2 class="text-center mb-4 text-light">
+        <i class="fa-solid fa-clipboard-list"></i> Lista de Trabajos
+    </h2>
+
+    <!-- Tabla -->
+    <div class="table-responsive">
+        <table class="table table-hover align-middle text-center text-light">
+            <thead>
+                <tr>
+                    <th>Vehículo</th>
+                    <th>Mecánico</th>
+                    <th>Estado</th>
+                    <th>Fecha Ingreso</th>
+                    <th>Fecha Entrega</th>
+                    <th>Costo reparaciones</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for trabajo in trabajos %}
+                <tr>
+                    <td>{{ trabajo.vehiculo.marca }} {{ trabajo.vehiculo.modelo }} ({{ trabajo.vehiculo.patente }})</td>
+                    <td>{{ trabajo.mecanico.nombre }} {{ trabajo.mecanico.apellido }}</td>
+                    <td>
+                        <span class="badge {% if trabajo.estado == 'pendiente' %}bg-warning text-dark{% elif trabajo.estado == 'en_progreso' %}bg-info{% else %}bg-success{% endif %}">
+                            {{ trabajo.estado|capfirst }}
+                        </span>
+                    </td>
+                    <td>{{ trabajo.fecha_ingreso|date:"Y-m-d H:i" }}</td>
+                    <td>{{ trabajo.fecha_entrega|default:"No entregado" }}</td>
+                    <td>${{ trabajo.total_reparaciones }}</td>
+                    <td>
+                        <!-- Botón de Ver Detalles -->
+                        <a href="{% url 'detalle_trabajo' trabajo.id %}" class="btn btn-primary btn-sm">
+                            <i class="fa-solid fa-eye"></i> Ver Detalles
+                        </a>
+                        <a href="{% url 'descargar_informe_pdf' trabajo.id %}" class="btn btn-success btn-sm">
+                            <i class="fa-solid fa-file-pdf"></i>
+                        </a>
+                        <!-- Botón de Modificar -->
+                        <a href="{% url 'modificar_trabajo' trabajo.id %}" class="btn btn-warning btn-sm">
+                            <i class="fa-solid fa-pencil-alt"></i> Modificar
+                        </a>
+                        <!-- Botón Eliminar -->
+                        {% for informe in trabajo.informes.all %}
+                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalEliminar{{ informe.id }}">
+                            <i class="fa-solid fa-trash"></i> Eliminar
+                        </button>
+
+                        <!-- Modal de Confirmación -->
+                        <div class="modal fade" id="modalEliminar{{ informe.id }}" tabindex="-1" aria-labelledby="modalLabel{{ informe.id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content bg-gray-800 text-white">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title text-danger" id="modalLabel{{ informe.id }}">
+                                            <i class="fa-solid fa-trash"></i> Confirmar Eliminación
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body" style="color: #0f172a;">
+                                        ¿Estás seguro de que deseas eliminar este informe con descripción: "<strong>{{ informe.descripcion }}</strong>"?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <a href="{% url 'eliminar_informe' informe.id %}" class="btn btn-danger">
+                                            <i class="fa-solid fa-trash"></i> Eliminar
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2024 Taller Mecánico | Todos los derechos reservados.</p>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</body>
+</html>

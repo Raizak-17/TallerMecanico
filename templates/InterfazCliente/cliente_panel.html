@@ -1,0 +1,213 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Cliente - Taller Mecánico</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-menu {
+            background-color: #161b22;
+            border-radius: 10px;
+            padding: 10px;
+            min-width: 200px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.5);
+            position: absolute;
+            right: 0;
+            top: 50px;
+            display: none;
+            z-index: 50;
+        }
+
+        .profile-menu a {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #c9d1d9;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .profile-menu a:hover {
+            background-color: #21262d;
+        }
+
+        .dropdown-container {
+            display: none;
+        }
+
+        .dropdown-container a {
+            display: block;
+            padding: 8px 20px;
+            color: #c9d1d9;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .dropdown-container a:hover {
+            background-color: #21262d;
+            border-radius: 8px;
+        }
+
+        .dropdown.open .dropdown-container {
+            display: block;
+        }
+
+        .content {
+            flex: 1;
+            margin-left: 16rem;
+        }
+
+        .footer {
+            background-color: #161b22;
+            color: #c9d1d9;
+            text-align: center;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body>
+    {% if completar_datos %}
+    <!-- Modal para completar datos -->
+    <div class="fixed inset-0 bg-gray-800 bg-opacity-80 flex items-center justify-center z-50">
+        <div class="bg-gray-900 rounded-lg shadow-lg p-8 w-full max-w-2xl">
+            <h2 class="text-2xl font-semibold text-white mb-4 text-center">Completa tus Datos Personales</h2>
+            <p class="text-gray-300 mb-6 text-center">Es necesario completar tus datos para continuar utilizando la plataforma.</p>
+            <form method="POST" action="{% url 'cliente_panel' %}">
+                {% csrf_token %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="rut" class="block text-gray-300">RUT</label>
+                        <input type="text" id="rut" name="rut" value="{{ cliente.rut|default_if_none:'' }}" class="w-full p-2 rounded bg-gray-800 text-gray-300 border border-gray-700">
+                    </div>
+                    <div>
+                        <label for="nombre" class="block text-gray-300">Nombre</label>
+                        <input type="text" id="nombre" name="nombre" value="{{ cliente.nombre|default_if_none:'' }}" class="w-full p-2 rounded bg-gray-800 text-gray-300 border border-gray-700">
+                    </div>
+                    <div>
+                        <label for="apellido" class="block text-gray-300">Apellido</label>
+                        <input type="text" id="apellido" name="apellido" value="{{ cliente.apellido|default_if_none:'' }}" class="w-full p-2 rounded bg-gray-800 text-gray-300 border border-gray-700">
+                    </div>
+                    <div>
+                        <label for="fecha_nacimiento" class="block text-gray-300">Fecha de Nacimiento</label>
+                        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" value="{{ cliente.fecha_nacimiento|date:'Y-m-d' }}" class="w-full p-2 rounded bg-gray-800 text-gray-300 border border-gray-700">
+                    </div>
+                    <div>
+                        <label for="genero" class="block text-gray-300">Género</label>
+                        <select id="genero" name="genero" class="w-full p-2 rounded bg-gray-800 text-gray-300 border border-gray-700">
+                            <option value="Masculino" {% if cliente.genero == 'Masculino' %}selected{% endif %}>Masculino</option>
+                            <option value="Femenino" {% if cliente.genero == 'Femenino' %}selected{% endif %}>Femenino</option>
+                            <option value="Otro" {% if cliente.genero == 'Otro' %}selected{% endif %}>Otro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-gray-300">Email</label>
+                        <input type="email" id="email" name="email" value="{{ cliente.email|default_if_none:'' }}" class="w-full p-2 rounded bg-gray-800 text-gray-300 border border-gray-700">
+                    </div>
+                    <div>
+                        <label for="telefono" class="block text-gray-300">Teléfono</label>
+                        <input type="tel" id="telefono" name="telefono" value="{{ cliente.telefono|default_if_none:'' }}" class="w-full p-2 rounded bg-gray-800 text-gray-300 border border-gray-700">
+                    </div>
+                    <div>
+                        <label for="direccion" class="block text-gray-300">Dirección</label>
+                        <input type="text" id="direccion" name="direccion" value="{{ cliente.direccion|default_if_none:'' }}" class="w-full p-2 rounded bg-gray-800 text-gray-300 border border-gray-700">
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-4 mt-6">
+                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Guardar Datos</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <!-- Navbar -->
+    <div class="navbar-top bg-gray-800 flex justify-between items-center px-6 py-3">
+        <h1 class="text-xl text-white font-bold">Panel de Cliente</h1>
+        <div class="flex items-center">
+            <span class="text-gray-300 mr-4">Bienvenido, <strong>{{ username }}</strong></span>
+            <div class="relative profile-dropdown">
+                <button class="flex items-center space-x-2 text-gray-300 hover:text-white">
+                    <i class="fas fa-user-circle text-2xl"></i>
+                </button>
+                <div class="profile-menu">
+                    <a href="{% url 'perfil' %}"><i class="fas fa-user mr-2"></i> Ver Perfil</a>
+                    <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt mr-2"></i> Cerrar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar bg-gray-800 w-64 h-screen fixed top-0 left-0 overflow-y-auto shadow-md">
+        <div class="text-center py-6 text-xl font-bold text-white border-b border-gray-700">
+            Taller Mecánico
+        </div>
+        <nav class="mt-4">
+            <a href="{% url 'cliente_panel' %}" class="flex items-center px-6 py-3 hover:bg-gray-700 transition">
+                <i class="fas fa-home mr-3"></i> Inicio
+            </a>
+            <div class="dropdown">
+                <button class="flex items-center px-6 py-3 w-full hover:bg-gray-700 transition">
+                    <i class="fas fa-calendar-check mr-3"></i> Cita Mecánica
+                </button>
+                <div class="dropdown-container ml-8">
+                    <a href="{% url 'solicitar_cita' %}">Solicitar Cita</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="flex items-center px-6 py-3 w-full hover:bg-gray-700 transition">
+                    <i class="fas fa-car-side mr-3"></i> Estado del Vehículo
+                </button>
+                <div class="dropdown-container ml-8">
+                    <a href="{% url 'seleccionar_patente' cliente.rut %}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg shadow-md text-xs sm:text-sm transition duration-300">
+                        <i class="fas fa-car"></i> Consultar Estado
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content p-6">
+        <div class="header">
+            <h2 class="text-3xl font-bold">Bienvenido al Panel de Cliente</h2>
+        </div>
+        <p class="text-gray-400 mt-4">Aquí puedes gestionar tus citas, vehículos y reparaciones.</p>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2024 Taller Mecánico. Desarrollado con <i class="fas fa-heart text-red-500"></i> por [Auto Mechanics].</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        document.querySelectorAll('.dropdown > button').forEach(button => {
+            button.addEventListener('click', () => {
+                const parent = button.parentElement;
+                parent.classList.toggle('open');
+            });
+        });
+
+        document.querySelector('.profile-dropdown button').addEventListener('click', () => {
+            const menu = document.querySelector('.profile-menu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        });
+    </script>
+    {% endif %}
+</body>
+</html>
