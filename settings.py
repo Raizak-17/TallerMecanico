@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-6i%7^twx3+kvt0x=%-2c!j&4)^w)6(v*a_3x5v)l)2)hfaookz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'localhost', '100.26.20.52:8000']
+ALLOWED_HOSTS = ['localhost', 'localhost', '18.212.144.207']
 
 
 
@@ -83,8 +83,8 @@ DATABASES = {
         'NAME': 'mecanico_db',
         'PORT': 3306,
         'USER': 'admin',
-        'HOST':'db-evaluacion4.cc0y3k7ukzmi.us-east-1.rds.amazonaws.com',
-        'PASSWORD': 'evaluacion4'
+        'HOST':'database-definitivo.cc0y3k7ukzmi.us-east-1.rds.amazonaws.com',
+        'PASSWORD': 'proyecto123'
     }
 }
 
